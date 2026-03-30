@@ -1,0 +1,16 @@
+torch
+transformers
+transformers_stream_generator
+tiktoken
+transformer_lens
+einops
+jaxtyping
+colorama
+datasets
+accelerate
+evaluate
+scikit-learn
+peft
+requests
+pandas
+numpy
