@@ -42,7 +42,7 @@ def print_generations(intervention_generations, baseline_generations, instructio
 
 
 def main():
-    # ---- Load models ----
+    # Load models
     print("Loading Gemma model...")
     model = load_gemma()
     tokenize_instructions_fn = get_tokenize_fn(model, template='gemma')
@@ -51,7 +51,7 @@ def main():
     model1 = load_qwen()
     tokenize_instructions_fn1 = get_tokenize_fn(model1, template='qwen')
 
-    # ---- Load datasets ----
+    # Load datasets
     print("Loading datasets...")
     harmful_inst_train, harmful_inst_test = get_harmful_instructions()
     harmless_inst_train, harmless_inst_test = get_harmless_instructions()
@@ -63,7 +63,7 @@ def main():
     for i in range(4):
         print(f"\t{repr(harmless_inst_train[i])}")
 
-    # ---- Compute DIM refusal directions ----
+    # Compute DIM refusal directions
     print("Computing DIM refusal directions...")
     ref_dir_q = dim_direction(model1, tokenize_instructions_fn1, 32, harmful_inst_train, harmless_inst_train, 20)
     print(f"Qwen DIM direction shape: {ref_dir_q.shape}")
@@ -71,7 +71,7 @@ def main():
     ref_dir_g = dim_direction(model, tokenize_instructions_fn, 32, harmful_inst_train, harmless_inst_train, 20)
     print(f"Gemma DIM direction shape: {ref_dir_g.shape}")
 
-    # ---- Generate target data ----
+    # Generate target data
     print("Generating target distributions...")
     N = 10
     data = []
@@ -81,7 +81,7 @@ def main():
 
     torch.cuda.empty_cache(); gc.collect()
 
-    # ---- RDO ----
+    # RDO
     print("Running Refusal Direction Optimization (RDO)...")
     rdo_r = refusal_direction_optimization(model1, tokenize_instructions_fn1, data, coef=0.31, num_steps=20)
     print(f"RDO direction: {rdo_r}")
@@ -100,7 +100,7 @@ def main():
 
     torch.cuda.empty_cache(); gc.collect()
 
-    # ---- RCO ----
+    # RCO
     print("Running Refusal Cone Optimization (RCO)...")
     rco_b = refusal_cone_optimization(model1, tokenize_instructions_fn1, data, d=model1.cfg.d_model, n=5, steps=50)
     print(f"RCO basis shape: {rco_b.shape}")
