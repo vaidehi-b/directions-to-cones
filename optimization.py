@@ -9,7 +9,7 @@ import torch.nn.functional as F
 from utils import run_with_ablation, run_with_steering
 
 
-# ---- Loss functions ----
+# Loss functions
 
 def compute_ce_loss(logits, targets):
     return F.cross_entropy(logits, targets)
@@ -21,7 +21,7 @@ def compute_kl(p_logits, q_logits, reduction="batchmean"):
     return F.kl_div(p, q, reduction=reduction)
 
 
-# ---- RDO: Refusal Direction Optimization ----
+# RDO: Refusal Direction Optimization
 
 def refusal_direction_optimization(model, tokenizer, data, coef, alpha=1.0, eta=0.01, lambda_abl=1.0, lambda_add=1.0, lambda_ret=1.0, num_steps=10):
 
@@ -64,7 +64,7 @@ def refusal_direction_optimization(model, tokenizer, data, coef, alpha=1.0, eta=
     return r.detach()
 
 
-# ---- RCO: Refusal Cone Optimization ----
+# RCO: Refusal Cone Optimization
 
 def sample(B: Float[Tensor, "n d"]) -> Float[Tensor, "d"]:
     """Randomly sample a direction from the cone."""
