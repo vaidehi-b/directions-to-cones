@@ -13,14 +13,12 @@ import torch.nn.functional as F
 
 from config import REFUSAL_PHRASES
 
-
-# ---- Similarity ----
+# Similarity
 
 def cos_sim(dir1, dir2):
     return F.cosine_similarity(dir1, dir2, dim=0).item()
 
-
-# ---- Hook functions ----
+#Hook functions
 
 def direction_ablation_hook(
     activation: Float[Tensor, "... d_act"],
@@ -52,7 +50,7 @@ def direction_steering_hook(
     return activation + coef * steering_vector
 
 
-# ---- Generation ----
+# Generation
 
 def _generate_with_hooks(
     model: HookedTransformer,
@@ -104,7 +102,7 @@ def get_intervention_generations(model, tokenizer, N, prompts, hook_fn, interven
     return intervention_generations, baseline_generations
 
 
-# ---- Intervention helpers ----
+# Intervention helper functions
 
 def run_with_ablation(model, tokenizer, r, prompt, type, layer='all', act_names=['resid_post']):
     intervention_layers = list(range(model.cfg.n_layers))
@@ -145,7 +143,7 @@ def generate_data(model, tokenizer, r, coef, pos_prompt, neg_prompt):
     return (pos_prompt, neg_prompt, t_answer, t_refusal, t_retain)
 
 
-# ---- Evaluation ----
+# Evaluation
 
 def detect_refusal(response: str) -> int:
     return int(any(phrase.lower() in response.lower() for phrase in REFUSAL_PHRASES))
@@ -159,7 +157,7 @@ def refusal_rate(generations: list[str], detect_refusal) -> float:
     return (num_refusals / total) * 100
 
 
-# ---- DIM direction ----
+# DIM direction
 
 def dim_direction(model, tokenizer, N, pos_prompts, neg_prompts, layer, pos=-1):
     pos_toks = tokenizer(instructions=pos_prompts[:N])
